@@ -1,0 +1,14 @@
+# === PRIVATE LAYER — personal health data, never commit/push ===
+personal_signals.json
+paper/evidence_table.md
+paper/figure_spo2.png
+paper/Grounded-N1-Scaffold.md
+
+# === Generated / large (regenerable from the clients) ===
+corpus/
+__pycache__/
+*.pyc
+.DS_Store
+
+# To run with your own data: copy personal_signals.template.json -> personal_signals.json,
+# set GARMIN_EXPORT_DIR for figure_spo2.py, then run the clients to rebuild corpus/.

@@ -1,0 +1,12 @@
+{
+  "hEDS": "(\"hypermobile Ehlers-Danlos\" OR \"hypermobility spectrum disorder\") AND (collagen OR tenascin OR diagnosis OR management)",
+  "POTS_exercise": "\"postural orthostatic tachycardia\" AND (exercise OR recumbent OR Levine OR rehabilitation OR deconditioning)",
+  "POTS_treatment": "\"postural orthostatic tachycardia\" AND (ivabradine OR propranolol OR midodrine OR fludrocortisone OR treatment)",
+  "MCAS": "\"mast cell activation\" AND (tryptase OR cromolyn OR ketotifen OR diagnosis OR criteria)",
+  "OSA": "\"obstructive sleep apnea\" AND (\"CPAP adherence\" OR \"intermittent hypoxia\" OR cognitive OR cardiovascular)",
+  "ADHD_guanfacine": "guanfacine AND (ADHD OR \"attention deficit\") AND (\"heart rate\" OR \"blood pressure\" OR cardiovascular OR tolerability)",
+  "OCD_ERP": "\"obsessive compulsive disorder\" AND (\"exposure and response prevention\" OR fluvoxamine OR SSRI)",
+  "Hashimoto": "(\"Hashimoto\" OR \"autoimmune hypothyroidism\") AND (\"desiccated thyroid\" OR liothyronine OR levothyroxine OR T3)",
+  "collagen_loading": "collagen AND tendon AND (synthesis OR \"vitamin C\" OR loading OR gelatin)",
+  "neuroconnective": "(\"joint hypermobility\" OR \"Ehlers-Danlos\") AND (anxiety OR autonomic OR neurodevelopmental OR ADHD OR autism)"
+}

@@ -1,0 +1,8 @@
+[
+ {"metric": "Resting HR", "value": "<your value, e.g. ~XX bpm>", "tags": ["heart", "rate", "pots", "cardio", "autonomic", "orthostatic"], "source": "<wearable export>"},
+ {"metric": "HRV", "value": "<your value / trend>", "tags": ["recovery", "hrv", "autonomic", "stress", "pots", "sleep"], "source": "<wearable export>"},
+ {"metric": "VO2max", "value": "<your value / trend>", "tags": ["exercise", "cardio", "fitness", "aerobic", "vo2", "deconditioning"], "source": "<wearable export>"},
+ {"metric": "Overnight SpO2", "value": "<your value: avg + nightly minima>", "tags": ["sleep", "osa", "apnea", "hypoxia", "hypoxemia", "oxygen", "cpap", "desaturation"], "source": "<wearable export>"},
+ {"metric": "Function", "value": "<exercise capacity / activity notes>", "tags": ["exercise", "fitness", "shoulder", "hypermobility", "heds", "cardio"], "source": "<self-report / wearable>"},
+ {"metric": "Medications", "value": "<your medications + doses>", "tags": ["adhd", "guanfacine", "thyroid", "hashimoto", "heart", "rate", "cardiovascular", "stimulant"], "source": "<personal clinical record>"}
+]
