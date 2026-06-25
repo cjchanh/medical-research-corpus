@@ -55,15 +55,17 @@ def ids_of(d: dict) -> str:
     return " · ".join(out) or "(no id)"
 
 
-def grounded_rank(question: str, top_n: int = 5) -> tuple[str, float, list]:
+def grounded_rank(question: str, top_n: int = 5, *, corpus_path=CORPUS,
+                  embeddings_path=EMB, embed_fn=embed) -> tuple[str, float, list]:
     """Shared ranking. Returns (verdict, top_cosine, results).
 
     results = [(cosine, doc, (tier, label)), …] ranked by evidence-authority then
-    relevance; [] when verdict is ABSTAIN.
+    relevance; [] when verdict is ABSTAIN. corpus_path / embeddings_path / embed_fn
+    are injectable for offline tests; CLI behavior is unchanged (module defaults).
     """
-    docs = {(d.get("doi") or d.get("id")): d for d in json.loads(CORPUS.read_text())}
-    vecs = json.loads(EMB.read_text())
-    qv = embed(question)
+    docs = {(d.get("doi") or d.get("id")): d for d in json.loads(corpus_path.read_text())}
+    vecs = json.loads(embeddings_path.read_text())
+    qv = embed_fn(question)
     ranked = sorted(((cosine(qv, v), k) for k, v in vecs.items()), reverse=True)
     top_cos = ranked[0][0] if ranked else 0.0
     if top_cos < ABSTAIN_COS:
