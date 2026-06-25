@@ -4,6 +4,15 @@ paper/evidence_table.md
 paper/figure_spo2.png
 paper/Grounded-N1-Scaffold.md
 
+# === Secrets / credentials — the engine is keyless, but guard any future keyed source ===
+.env
+.env.*
+*.key
+*.pem
+*.p12
+secrets.*
+credentials.*
+
 # === Generated / large (regenerable from the clients) ===
 corpus/
 __pycache__/

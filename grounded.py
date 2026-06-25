@@ -95,6 +95,9 @@ def main() -> int:
     if verdict == "ABSTAIN":
         print(f"\nverdict: ABSTAIN  — top cosine {top_cos:.3f} < {ABSTAIN_COS}.")
         print("The corpus has nothing relevant to this question. Not fabricating an answer.")
+        print("\n→ Pull sources for this topic and re-ask in one line:")
+        print(f'    python3 seed.py "{question}" && python3 grounded.py "{question}"')
+        print("  (shorten the seed term to the core condition for broader recall.)")
         print("=" * 70)
         return 0
 
