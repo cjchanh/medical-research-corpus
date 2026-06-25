@@ -25,6 +25,8 @@ def tokens(text: str) -> set[str]:
 
 
 def match_signals(question: str, lit_titles: list[str], top: int = 4) -> list[dict]:
+    if not SIGNALS.exists():
+        return []  # no personal layer present — fail closed to "no signals", never crash
     sigs = json.loads(SIGNALS.read_text())
     qtok = tokens(question) | tokens(" ".join(lit_titles))
     scored = [(len(set(s["tags"]) & qtok), s) for s in sigs]
@@ -58,7 +60,9 @@ def main() -> int:
 
     print("\n--- WHAT YOUR DATA SHOWS (verified personal signals) ---")
     sigs = match_signals(question, titles)
-    if not sigs:
+    if not SIGNALS.exists():
+        print("  (no personal_signals.json — copy personal_signals.template.json to add your own)")
+    elif not sigs:
         print("  (no personal signal tagged to this question)")
     for s in sigs:
         print(f"  • {s['metric']}: {s['value']}")

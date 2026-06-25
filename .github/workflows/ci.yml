@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install test deps
+        run: pip install pytest
+      - name: Unit tests (offline, no network/Ollama)
+        run: python -m pytest -q
+      - name: Compile all modules
+        run: python -m compileall -q .
+      - name: Public-boundary gate (no private/secret files tracked)
+        run: python scripts/verify_public_boundary.py
