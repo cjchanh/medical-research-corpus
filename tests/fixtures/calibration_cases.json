@@ -1,0 +1,6 @@
+[
+ {"question": "Does CPAP adherence reduce cardiovascular risk in obstructive sleep apnea?", "top_cosine": 0.825, "expected": "ANSWER", "note": "on-topic, well represented in a matched corpus"},
+ {"question": "What cardiovascular and autonomic complications occur in long COVID?", "top_cosine": 0.757, "expected": "ANSWER", "note": "on-topic, in a long-covid corpus"},
+ {"question": "Does CPAP reduce CV risk in OSA? (asked against a long-covid corpus)", "top_cosine": 0.581, "expected": "ABSTAIN", "note": "corpus/question mismatch -> correctly abstains rather than stretch"},
+ {"question": "What is the best programming language for building a web app?", "top_cosine": 0.445, "expected": "ABSTAIN", "note": "off-topic"}
+]

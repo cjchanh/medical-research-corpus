@@ -1,5 +1,7 @@
-"""Make the repo-root engine modules importable from tests/ (they live at the root)."""
+"""Make the repo-root engine modules + scripts/ importable from tests/."""
 import pathlib
 import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+_root = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(_root))
+sys.path.insert(0, str(_root / "scripts"))

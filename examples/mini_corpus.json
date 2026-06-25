@@ -1,0 +1,5 @@
+[
+ {"doi": "demo-sr", "title": "Systematic review and meta-analysis of CPAP for cardiovascular risk in obstructive sleep apnea", "is_oa": true, "fulltext": "x", "year": "2025", "url": "https://example.org/demo-sr"},
+ {"doi": "demo-pre", "title": "Preprint: CPAP adherence and outcomes", "is_preprint": true, "year": "2026", "url": "https://example.org/demo-pre"},
+ {"id": "NCT-DEMO", "title": "Trial of CPAP in OSA", "is_trial": true, "year": "2024", "url": "https://example.org/NCT-DEMO"}
+]

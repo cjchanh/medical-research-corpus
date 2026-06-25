@@ -46,6 +46,10 @@ def load_nights() -> list[tuple[datetime, float, float | None]]:
 
 def main() -> int:
     nights = load_nights()
+    if not nights:  # fail closed: no Garmin export -> clear message, never crash on empty data
+        print(f"[no data] No *sleepData.json with SpO2 summaries found under: {GARMIN}")
+        print("  Set GARMIN_EXPORT_DIR to your Garmin sleep-export folder, then re-run.")
+        return 1
     dates = [n[0] for n in nights]
     lows = [n[1] for n in nights]
     n = len(lows)
