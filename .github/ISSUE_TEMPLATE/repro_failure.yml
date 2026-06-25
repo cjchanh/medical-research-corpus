@@ -1,0 +1,31 @@
+name: Reproducibility failure
+description: A documented reproduction step (Docker, Colab, seed.py, demo_offline) didn't reproduce
+labels: ["reproducibility"]
+body:
+  - type: markdown
+    attributes:
+      value: "Do **not** paste real personal health data, keys, or exports."
+  - type: dropdown
+    id: path
+    attributes:
+      label: Which path failed?
+      options:
+        - Docker (docker compose ...)
+        - Colab notebook
+        - seed.py / grounded.py (local)
+        - scripts/demo_offline.py
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Exact steps + output
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "OS, Python, Ollama, Docker versions"
+    validations:
+      required: true

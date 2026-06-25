@@ -1,5 +1,7 @@
 # Medical Research Corpus
 
+![CI](https://github.com/cjchanh/medical-research-corpus/actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+
 Sovereign, local-first medical-evidence engine. Pulls peer-reviewed literature,
 preprints, and trials into a local corpus and answers condition questions with
 **authority-ranked, cited, ABSTAIN-gated** retrieval — fully on-device (Ollama

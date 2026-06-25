@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Medical Research Corpus: a sovereign, local-first, ABSTAIN-gated medical-evidence engine"
+authors:
+  - name: "Centennial Defense Systems"
+repository-code: "https://github.com/cjchanh/medical-research-corpus"
+license: MIT
+keywords:
+  - retrieval-augmented-generation
+  - medical-evidence
+  - local-first
+  - sovereign-ai
+  - fail-closed
+  - clinical-literature
+date-released: 2026-06-24

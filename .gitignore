@@ -15,6 +15,7 @@ credentials.*
 
 # === Generated / large (regenerable from the clients) ===
 corpus/
+dist/
 __pycache__/
 *.pyc
 .DS_Store
