@@ -6,6 +6,7 @@ Run AFTER europepmc_client.py.  python3 clinicaltrials_client.py
 from __future__ import annotations
 
 import json
+import os
 import sys
 import time
 import urllib.parse
@@ -32,15 +33,28 @@ TERMS = {
 }
 
 
-def pull(term: str, n: int = 12) -> list[dict]:
-    url = f"{API}?{urllib.parse.urlencode({'query.term': term, 'pageSize': str(n)})}"
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            return json.load(resp).get("studies", [])
-    except Exception as exc:
-        print(f"[ERR] {term}: {exc}", file=sys.stderr)
-        return []
+def pull(term: str, target: int = 40, page_size: int = 100) -> list[dict]:
+    """Page through ClinicalTrials.gov v2 via nextPageToken up to ~`target` studies (was a hard 12)."""
+    out: list[dict] = []
+    token = None
+    while len(out) < target:
+        q = {"query.term": term, "pageSize": str(min(page_size, target - len(out)))}
+        if token:
+            q["pageToken"] = token
+        req = urllib.request.Request(f"{API}?{urllib.parse.urlencode(q)}", headers={"User-Agent": UA})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.load(resp)
+        except Exception as exc:
+            if not out:
+                print(f"[ERR] {term}: {exc}", file=sys.stderr)
+            break
+        out.extend(data.get("studies", []))
+        token = data.get("nextPageToken")
+        if not token:
+            break
+        time.sleep(0.2)
+    return out
 
 
 def normalize(study: dict, condition: str) -> dict:
@@ -68,9 +82,10 @@ def main() -> int:
         print("Run europepmc_client.py first.", file=sys.stderr)
         return 1
     docs = {(d.get("doi") or d.get("id")): d for d in json.loads(CORPUS.read_text())}
+    per = int(os.environ.get("CT_PER_TERM", "40"))           # was a hard 12
     added = 0
     for cond, term in TERMS.items():
-        studies = pull(term)
+        studies = pull(term, per)
         for s in studies:
             d = normalize(s, cond)
             if d["id"] and d["id"] not in docs:

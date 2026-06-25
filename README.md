@@ -21,6 +21,14 @@ questions — the data layer stays private and gitignored; only the engine and m
 and the source data must stay on-premise.
 
 ## Quick start
+
+**One-liner — build a cited corpus for *any* condition, then ask it:**
+```
+python3 seed.py "long covid"        # pull + dedup + embed for any condition, one command
+python3 grounded.py "<question>"    # authority-ranked, ABSTAIN-gated, cited answer
+```
+
+Or run the lanes manually:
 ```
 python3 europepmc_client.py         # pull articles + preprints (+ BioC full text)
 python3 clinicaltrials_client.py    # add ClinicalTrials.gov trials
@@ -28,6 +36,10 @@ python3 embeddings.py               # embed corpus locally (nomic-embed-text, 76
 python3 grounded.py  "<question>"   # authority-ranked, ABSTAIN-gated, cited answer
 python3 cross_query.py "<question>" # literature × your verified personal signals
 ```
+
+**Corpus size is configurable.** `seed.py --per 200 "<condition>"`, or for the seed-file run
+set `EPMC_PER_QUERY` / `EPMC_PPR_PER_QUERY` / `CT_PER_TERM` (defaults 100 articles + 30 preprints
++ 40 trials per topic; the clients page through Europe PMC `cursorMark` and ClinicalTrials `nextPageToken`).
 
 ## Example outputs
 

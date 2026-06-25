@@ -37,6 +37,34 @@ def search(query: str, page_size: int = 30) -> list[dict]:
     return []
 
 
+def search_paged(query: str, target: int, page_size: int = 100) -> list[dict]:
+    """Page through Europe PMC via cursorMark up to ~`target` results (lifts the old 30-row cap)."""
+    out: list[dict] = []
+    cursor = "*"
+    page_size = min(page_size, 1000)
+    while len(out) < target:
+        params = {
+            "query": query, "format": "json", "resultType": "core",
+            "pageSize": str(min(page_size, target - len(out))), "cursorMark": cursor,
+        }
+        req = urllib.request.Request(f"{BASE}?{urllib.parse.urlencode(params)}", headers={"User-Agent": UA})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.load(resp)
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+            if not out:
+                raise RuntimeError(f"EPMC failed: {exc}") from exc
+            break  # partial results are still useful
+        batch = data.get("resultList", {}).get("result", [])
+        out.extend(batch)
+        nxt = data.get("nextCursorMark")
+        if not batch or not nxt or nxt == cursor:
+            break
+        cursor = nxt
+        time.sleep(0.2)
+    return out
+
+
 def fetch_fulltext(pmcid: str) -> str | None:
     """Pull OA full text via NCBI BioC JSON and join passage text. None if unavailable."""
     req = urllib.request.Request(BIOC.format(pmcid=pmcid), headers={"User-Agent": UA})
@@ -75,11 +103,13 @@ def normalize(rec: dict, condition: str) -> dict:
 def main() -> int:
     seeds: dict[str, str] = json.loads((HERE / "seed_queries.json").read_text())
     CORPUS_DIR.mkdir(parents=True, exist_ok=True)
+    per = int(os.environ.get("EPMC_PER_QUERY", "100"))        # was a hard 30 — now configurable
+    ppr = int(os.environ.get("EPMC_PPR_PER_QUERY", "30"))     # was a hard 10
     deduped: dict[str, dict] = {}
 
     for cond, query in seeds.items():
         try:
-            recs = search(query, 30)
+            recs = search_paged(query, per)
         except RuntimeError as exc:
             print(f"[ERR] {cond}: {exc}", file=sys.stderr)
             continue
@@ -92,7 +122,7 @@ def main() -> int:
 
     for cond, query in seeds.items():  # preprint (medRxiv/bioRxiv) lane
         try:
-            recs = search(f"({query}) AND (SRC:PPR)", 10)
+            recs = search_paged(f"({query}) AND (SRC:PPR)", ppr)
         except RuntimeError:
             recs = []
         for d in (normalize(r, cond) for r in recs):
