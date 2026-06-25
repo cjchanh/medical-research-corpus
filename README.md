@@ -29,6 +29,36 @@ python3 grounded.py  "<question>"   # authority-ranked, ABSTAIN-gated, cited ans
 python3 cross_query.py "<question>" # literature × your verified personal signals
 ```
 
+## Example outputs
+
+On-topic question → **authority-ranked, cited** answer (real run against the 468-doc corpus):
+
+```
+$ python3 grounded.py "Does CPAP adherence reduce cardiovascular risk in obstructive sleep apnea?"
+
+GROUNDED  corpus: 468 docs | top cosine 0.825
+verdict: ANSWER  | ranked by evidence-authority within the semantic matches
+
+[1] «research-article» Long-term effect of CPAP on cardiovascular outcomes after acute myocardial
+    infarction in obstructive sleep apnea patients.  2026 | doi:10.1007/s11325-026-03642-x
+    PMID:41896434 | cos=0.825   https://europepmc.org/article/MED/41896434
+[2] «research-article» CPAP therapy for patients with OSA and coronary artery disease.
+    2025 | PMID:41181658 · OA+full-text | cos=0.804
+[3] «research-article» Obstructive Sleep Apnea and Coronary Artery Disease: an overlooked
+    cardiovascular risk factor.  2026 | PMID:41898162 · OA+full-text | cos=0.800
+    ... every ranked claim cites a resolvable Europe PMC / DOI / PMID source.
+```
+
+Off-topic question → **ABSTAIN** (fail-closed — it refuses rather than fabricate):
+
+```
+$ python3 grounded.py "What is the best programming language for building a web app?"
+
+GROUNDED  corpus: 468 docs | top cosine 0.461
+verdict: ABSTAIN  — top cosine 0.461 < 0.62.
+The corpus has nothing relevant to this question. Not fabricating an answer.
+```
+
 ## Corpus (2026-06-22)
 **468 docs** = 277 peer-reviewed articles + 84 preprints (medRxiv/bioRxiv) + 107 trials.
 198 OA papers carry full-text bodies. 468 local embeddings. DOI/NCT-deduped.

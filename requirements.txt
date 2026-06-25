@@ -1,0 +1,12 @@
+# The retrieval engine (europepmc_client, clinicaltrials_client, embeddings,
+# grounded, semantic_query, cross_query, authority, paper_evidence) is
+# Python 3.10+ STANDARD LIBRARY ONLY. It talks to a local Ollama server
+# (http://localhost:11434, model: nomic-embed-text) over urllib — no
+# third-party HTTP client, no API keys.
+#
+# Prerequisite (not a pip package): a running Ollama with the embedding model:
+#     ollama pull nomic-embed-text
+#
+# The ONLY third-party dependency below is used solely by paper/figure_spo2.py
+# to render the SpO2 figure; the engine itself does not need it.
+matplotlib>=3.7
