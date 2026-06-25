@@ -1,0 +1,13 @@
+.git
+.gitignore
+__pycache__/
+*.pyc
+corpus/
+notebooks/
+outputs/
+.DS_Store
+personal_signals.json
+paper/*.pdf
+paper/*.png
+paper/*.html
+paper/Grounded-N1-Scaffold.md

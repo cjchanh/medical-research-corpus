@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 import sys
 import urllib.request
@@ -22,7 +23,7 @@ from authority import authority_tier
 HERE = Path(__file__).resolve().parent
 CORPUS = HERE / "corpus" / "corpus.json"
 EMB = HERE / "corpus" / "embeddings.json"
-OLLAMA = "http://localhost:11434/api/embeddings"
+OLLAMA = os.environ.get("OLLAMA_URL", "http://localhost:11434").rstrip("/") + "/api/embeddings"
 MODEL = "nomic-embed-text"
 ABSTAIN_COS = 0.62  # calibrated: on-topic POTS scored 0.78, off-topic retinopathy 0.56 -> abstain
 

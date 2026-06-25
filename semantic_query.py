@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 import sys
 import urllib.request
@@ -18,7 +19,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 CORPUS = HERE / "corpus" / "corpus.json"
 EMB = HERE / "corpus" / "embeddings.json"
-OLLAMA = "http://localhost:11434/api/embeddings"
+OLLAMA = os.environ.get("OLLAMA_URL", "http://localhost:11434").rstrip("/") + "/api/embeddings"
 MODEL = "nomic-embed-text"
 
 

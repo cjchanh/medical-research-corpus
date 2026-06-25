@@ -1,0 +1,34 @@
+# Sovereign, one-command stack: a local Ollama + the retrieval engine.
+# Nothing leaves your machine except the public-literature API queries.
+#
+#   docker compose build
+#   docker compose run --rm engine python3 seed.py "long covid"
+#   docker compose run --rm engine python3 grounded.py "Does CPAP reduce CV risk in OSA?"
+#
+name: medical-research-corpus
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama-models:/root/.ollama   # persist pulled models across runs
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  engine:
+    build: .
+    depends_on:
+      ollama:
+        condition: service_started
+    environment:
+      OLLAMA_URL: http://ollama:11434
+    volumes:
+      - ./corpus:/app/corpus          # the built corpus persists to the host (gitignored)
+    stdin_open: true
+    tty: true
+
+volumes:
+  ollama-models:

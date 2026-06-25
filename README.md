@@ -20,6 +20,20 @@ questions — the data layer stays private and gitignored; only the engine and m
 — the same sovereign, cited, fail-closed pattern applies anywhere evidence must be traceable
 and the source data must stay on-premise.
 
+## Run it with Docker (one command, zero setup)
+
+No Python or Ollama install — `docker compose` brings up a local Ollama + the engine together:
+```
+docker compose build
+docker compose run --rm engine python3 seed.py "long covid"                      # build a cited corpus for any condition
+docker compose run --rm engine python3 grounded.py "Does CPAP reduce CV risk in OSA?"   # ask it
+```
+Everything runs locally (the engine reaches Ollama over the compose network via `OLLAMA_URL`); only the public-literature API queries leave your machine. The built corpus persists to `./corpus`.
+
+## Reproduce in Colab (no install at all)
+
+Open **`notebooks/reproduce_in_colab.ipynb`** in Google Colab and run top-to-bottom (~3 min): it installs Ollama, clones the engine, builds a corpus, and shows a cited answer **and** an ABSTAIN — the whole pipeline, in the browser.
+
 ## Quick start
 
 **One-liner — build a cited corpus for *any* condition, then ask it:**
