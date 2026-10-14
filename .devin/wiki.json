@@ -1,0 +1,68 @@
+{
+  "repo_notes": [
+    {
+      "content": "Medical Research Corpus is a sovereign, local-first medical-evidence engine: 'a system shouldn't answer — it should testify.' It pulls peer-reviewed literature, preprints, and trials into a local corpus and answers condition questions with authority-ranked, cited, ABSTAIN-gated retrieval — fully on-device (Ollama nomic-embed-text embeddings, no cloud at query time). Core invariants: fail-closed ABSTAIN below top-cosine 0.62 rather than fabricate; every ranked claim cites a resolvable DOI/PMID/Europe-PMC source; a record-authority re-rank (systematic-review > RCT/scoping-review > cohort/research-article > trial-registry > preprint) ensures a strong source is never beaten by a weak one on relevance alone; the corpus is extended never clobbered (DOI/NCT dedup); personal data (personal_signals.json, generated corpus/, the filled paper draft) is gitignored — only the engine and method are public. It is not medical advice.",
+      "author": "Devin"
+    },
+    {
+      "content": "Layout is a flat Python package (~30 modules at root, stdlib-only at runtime). seed.py builds/extends a corpus for any condition in one command (EPMC_PER_QUERY/EPMC_PPR_PER_QUERY/CT_PER_TERM caps). Ingestion lanes: europepmc_client.py (articles + SRC:PPR preprints + BioC OA full text, keyless, cursorMark paging) and clinicaltrials_client.py (v2 API, NCT dedup, nextPageToken). embeddings.py caches 768-d vectors to corpus/embeddings.json keyed by DOI/id. Query lanes: grounded.py (semantic rank → authority re-rank → ABSTAIN gate; exposes grounded_rank(); verdicts ANSWER/ABSTAIN), semantic_query.py (plain cosine), grounded_query.py (minimal testify prototype), cross_query.py (literature × verified personal signals via grounded_rank), paper_evidence.py (engine writes its own evidence table). authority.py holds the tier hierarchy. scripts/ has demo_offline.py, benchmark_abstain.py, package_demo_corpus.py, verify_public_boundary.py. tests/ has 7 pytest modules + calibration_cases.json fixture. docs/ has METHOD_CARD.md, ABSTAIN_CALIBRATION.md, LIMITATIONS.md, release.md. Docker: Dockerfile + docker-compose.yml (engine + local Ollama); notebooks/reproduce_in_colab.ipynb runs the whole pipeline in a browser. seed_queries.json seeds conditions; personal_signals.template.json documents the private-data shape.",
+      "author": "Devin"
+    },
+    {
+      "content": "Vocabulary: 'ABSTAIN' = the fail-closed verdict when top cosine < 0.62 (calibrated on-topic ≈0.78, off-topic ≈0.56 — see docs/ABSTAIN_CALIBRATION.md); 'authority tier' = the evidence hierarchy in authority.py used to re-rank semantic matches; 'lane' = an ingestion or query pipeline stage; 'cross-join' = cross_query.py's pairing of literature hits with personal signals — the deliberate integration point. Key architectural decision (Path A, 2026-06-22): the corpus is ADJACENT to, not ingested into, the Archivist personal core — trust-domain separation between user-record testimony and cloud-sourced public literature; Path B (a governed source-adapter) is a parked future option. Corpus snapshot: 468 docs (277 articles + 84 preprints + 107 trials), 198 OA full-text. Known limits: BioC 404s on very recent papers (~99% OA success), P5 refresh cron not wired — see docs/LIMITATIONS.md.",
+      "author": "Devin"
+    }
+  ],
+  "pages": [
+    {
+      "title": "Overview",
+      "purpose": "What the engine is: sovereign local-first medical-evidence retrieval that testifies or declines — the motivation (fluent-but-unverifiable medical AI vs cited/auditable retrieval), the 468-doc corpus snapshot, source list, and the not-medical-advice boundary. Ground in README.md and docs/METHOD_CARD.md.",
+      "parent": null
+    },
+    {
+      "title": "Getting Started",
+      "purpose": "Three run paths: docker compose (build + run engine with co-launched Ollama via OLLAMA_URL), the Colab notebook notebooks/reproduce_in_colab.ipynb (~3 min, no install), and bare-metal quick start (seed.py '<condition>', grounded.py '<question>', plus manual lane order europepmc_client → clinicaltrials_client → embeddings → grounded/cross_query). Corpus-size knobs (seed --per, EPMC_*/CT_* env vars).",
+      "parent": "Overview"
+    },
+    {
+      "title": "Testify Doctrine and the ABSTAIN Gate",
+      "purpose": "The design laws: testify-not-answer, cited-resolvable claims, fail-closed ABSTAIN with the 0.62 cosine threshold and its calibration (docs/ABSTAIN_CALIBRATION.md), the authority hierarchy preventing weak sources beating strong ones, extend-never-clobber corpus policy, and the public/private two-layer boundary (gitignored personal layer, template-documented).",
+      "parent": "Overview"
+    },
+    {
+      "title": "Corpus Building and Ingestion",
+      "purpose": "seed.py one-command corpus building/extending; europepmc_client.py (articles + SRC:PPR preprints + BioC full text, keyless, cursorMark paging); clinicaltrials_client.py (trials lane, NCT dedup); dedup and extend semantics; embeddings.py incremental Ollama cache; seed_queries.json; corpus/ output layout (corpus.json, embeddings.json).",
+      "parent": null
+    },
+    {
+      "title": "Retrieval and Ranking",
+      "purpose": "grounded.py: cosine semantic window → authority.py tier re-rank → ABSTAIN gate → compile-style verdict with cited, authority-labelled evidence; grounded_rank() as the reusable ranking function; semantic_query.py and grounded_query.py as simpler lanes; the verdict format (GROUNDED line, ANSWER/ABSTAIN, per-item DOI/PMID/cos citations).",
+      "parent": null
+    },
+    {
+      "title": "Cross-Corpus Join and Privacy Boundary",
+      "purpose": "cross_query.py: pairing grounded_rank() literature hits with verified personal signals (Garmin/clinical) for the same question — 'one engine, two corpora'; personal_signals.template.json shape; why the personal layer is gitignored and never committed; scripts/verify_public_boundary.py enforcing the split.",
+      "parent": null
+    },
+    {
+      "title": "Archivist Adjacency (Path A Decision)",
+      "purpose": "The deliberate Path A architecture decision: corpus kept separate from the Archivist personal core for trust-domain separation (external cloud-sourced literature vs user-record testimony); cross_query.py as the integration surface; the parked Path B option (governed spec-grade source-adapter via investigator/ingestion/importer.py + CORPUS_IMPORT_AUDIT_VERIFICATION_PLAN.md). Source: README.md architecture section.",
+      "parent": null
+    },
+    {
+      "title": "Packaging, Demos, and Scripts",
+      "purpose": "Dockerfile/docker-compose.yml/docker-entrypoint.sh (engine + Ollama, corpus persisted to ./corpus); notebooks/reproduce_in_colab.ipynb; scripts/: demo_offline.py, benchmark_abstain.py, package_demo_corpus.py, verify_public_boundary.py; examples/ (mini_corpus.json, mini_embeddings.json); paper/figure_spo2.py and paper_evidence.py generating the paper's evidence table.",
+      "parent": null
+    },
+    {
+      "title": "Testing and CI",
+      "purpose": ".github/workflows/ci.yml: pytest -q offline (no network/Ollama) on Python 3.10–3.12, compileall, and the verify_public_boundary.py gate ensuring no private/secret files are tracked. tests/ modules (test_authority, test_grounded, test_cross_query, test_seed, both client tests, test_demo_and_benchmark) and tests/fixtures/calibration_cases.json.",
+      "parent": null
+    },
+    {
+      "title": "Design Documents",
+      "purpose": "docs/METHOD_CARD.md (the five-step pipeline), docs/ABSTAIN_CALIBRATION.md (threshold derivation), docs/LIMITATIONS.md (known limits incl. BioC 404s and unwired refresh cron), docs/release.md, CONTRIBUTING.md, SECURITY.md, CITATION.cff, CHANGELOG.md.",
+      "parent": null
+    }
+  ]
+}
